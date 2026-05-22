@@ -1,0 +1,69 @@
+name: firebase_ai
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  cloud_firestore: ^6.1.3
+  country_picker: ^2.0.27
+  file_picker: ^8.0.0
+  firebase_auth: ^6.2.0
+  firebase_core: ^4.5.0
+  firebase_storage: ^13.2.0
+  fl_chart: ^1.2.0
+  flutter:
+    sdk: flutter
+  flutter_easyloading: ^3.0.5
+  flutter_gemini: ^3.0.0
+  flutter_svg: ^2.2.4
+  fluttertoast: ^9.0.0
+  font_awesome_flutter: ^11.0.0
+  google_fonts: ^8.0.2
+  google_sign_in: ^7.2.0
+  graphview: ^1.5.1
+  http: ^1.6.0
+  image_picker: ^1.2.1
+  intl: ^0.20.2
+  lottie: ^3.3.2
+  syncfusion_flutter_charts: ^33.1.44
+  syncfusion_flutter_maps: ^33.1.45
+  word_cloud: ^1.0.3
+  flutter_native_splash: ^2.4.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+  rename: ^3.0.2
+ 
+
+flutter:
+  assets:
+    - assets/maps/world_map.json
+    - assets/cornelia_ai_logo_flower-cropped.svg
+    - assets/bgoverlay.png
+    - assets/cornelia_flower.svg
+    - assets/cornelia_logo1.png
+    - assets/iconlogo.png
+  uses-material-design: true
+
+
+flutter_native_splash:
+  color: "#17171E"
+  image: assets/bgoverlay.png
+  android: true
+  ios: true
+  web: false
+  android_12:
+    image: assets/bgoverlay.png
+    icon_background_color: "#17171E"
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/iconlogo.png"
+  remove_alpha_ios: true

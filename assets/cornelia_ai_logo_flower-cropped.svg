@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="66.375 89.3875 360 285" style="max-height: 500px" width="360" height="285">
+  <defs>
+    <radialGradient r="60%" cy="80%" cx="50%" id="petal-grad">
+      <stop stop-opacity="0.9" stop-color="#EF9F27" offset="0%"/>
+      <stop stop-opacity="0.4" stop-color="#BA7517" offset="100%"/>
+    </radialGradient>
+    <radialGradient r="60%" cy="80%" cx="50%" id="petal-inner">
+      <stop stop-opacity="0.7" stop-color="#FAC775" offset="0%"/>
+      <stop stop-opacity="0.2" stop-color="#EF9F27" offset="100%"/>
+    </radialGradient>
+    <radialGradient r="50%" cy="50%" cx="50%" id="core-grad">
+      <stop stop-opacity="1" stop-color="#FAC775" offset="0%"/>
+      <stop stop-opacity="1" stop-color="#BA7517" offset="100%"/>
+    </radialGradient>
+    <filter height="180%" width="180%" y="-40%" x="-40%" id="petal-glow">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
+
+  
+  <g transform="translate(250,175)">
+
+    
+    <g opacity="0.85">
+      <ellipse transform="rotate(0)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(45)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(90)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(135)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(180)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(225)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(270)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(315)" fill="url(#petal-grad)" ry="30" rx="14" cy="-52" cx="0"/>
+    </g>
+
+    
+    <g opacity="0.55">
+      <ellipse transform="rotate(22.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(67.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(112.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(157.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(202.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(247.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(292.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+      <ellipse transform="rotate(337.5)" fill="url(#petal-inner)" ry="20" rx="9" cy="-34" cx="0"/>
+    </g>
+
+    
+    <g opacity="0.3">
+      <ellipse transform="rotate(0)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(45)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(90)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(135)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(180)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(225)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(270)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+      <ellipse transform="rotate(315)" stroke-width="0.8" stroke="#FAC775" fill="none" ry="30" rx="14" cy="-52" cx="0"/>
+    </g>
+
+    
+    <circle filter="url(#petal-glow)" opacity="0.2" fill="#EF9F27" r="22" cy="0" cx="0"/>
+
+    
+    <circle fill="url(#core-grad)" r="16" cy="0" cx="0"/>
+    <circle opacity="0.6" stroke-width="1" stroke="#FAC775" fill="none" r="16" cy="0" cx="0"/>
+
+    
+    <circle opacity="0.8" fill="#633806" r="5" cy="0" cx="0"/>
+    <circle opacity="0.6" fill="#FAC775" r="1.8" cy="-2" cx="-2"/>
+
+  </g>
+
+  
+  <text text-anchor="middle" fill="#F1EFE8" letter-spacing="12" font-weight="300" font-size="52" font-family="Georgia, 'Times New Roman', serif" y="308" x="250">CORNELIA</text>
+
+  <line opacity="0.7" stroke-width="0.8" stroke="#EF9F27" y2="324" x2="385" y1="324" x1="115"/>
+
+  <text text-anchor="middle" fill="#888780" letter-spacing="5" font-weight="400" font-size="11" font-family="Georgia, 'Times New Roman', serif" y="348" x="250">INTELLIGENT BY DESIGN</text>
+
+  <text text-anchor="middle" fill="#5F5E5A" letter-spacing="2" font-weight="300" font-size="10" font-family="Georgia, 'Times New Roman', serif" y="372" x="250">AI-POWERED PLATFORM</text>
+
+</svg>
