@@ -16,7 +16,7 @@ void main() async {
     persistenceEnabled: false,
   );
 
-  final String geminiApiKey = 'AIzaSyAGuDhopQOkJlvkGGLe4dN7YjcXDi_pImI';
+  final String geminiApiKey = 'AIzaSyADozCO4uBbQ_t7GBqx6GQDQ-CAeaY6LX8';
   Gemini.init(apiKey: geminiApiKey);
 
   FlutterNativeSplash.remove();

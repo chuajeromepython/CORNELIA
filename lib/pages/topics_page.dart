@@ -562,6 +562,66 @@ class _TopicState extends State<Topic> {
 
   // ── Gemini ───────────────────────────────────────────────────────────────
 
+  /// Calls Gemini directly via the REST API (bypassing flutter_gemini,
+  /// which swallows the real error body behind a generic message).
+  /// Retries with backoff on 503 (model overloaded). Prints the ACTUAL
+  /// error body from Google so we can see the real cause.
+  Future<String?> _promptGeminiWithRetry(
+    String prompt, {
+    int maxAttempts = 4,
+    String model = 'gemini-3.6-flash',
+  }) async {
+    const apiKey =
+        'AIzaSyADozCO4uBbQ_t7GBqx6GQDQ-CAeaY6LX8'; // TODO: move to env
+    final uri = Uri.parse(
+      'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
+    );
+
+    for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'contents': [
+                {
+                  'parts': [
+                    {'text': prompt},
+                  ],
+                },
+              ],
+            }),
+          )
+          .timeout(const Duration(seconds: 120));
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        final text =
+            decoded['candidates']?[0]?['content']?['parts']?[0]?['text']
+                as String?;
+        return text;
+      }
+
+      // Print the REAL body from Google, not a generic wrapper message.
+      print(
+        'Gemini REST call failed (attempt $attempt/$maxAttempts): '
+        '${response.statusCode} — ${response.body}',
+      );
+
+      final isOverloaded = response.statusCode == 503;
+      final isLastAttempt = attempt == maxAttempts;
+      if (!isOverloaded || isLastAttempt) {
+        throw Exception(
+          'Gemini request failed: ${response.statusCode} — ${response.body}',
+        );
+      }
+
+      final backoff = Duration(seconds: 2 * attempt);
+      await Future.delayed(backoff);
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>> _generateGeminiResponse(
     List<String> texts,
   ) async {
@@ -644,19 +704,14 @@ ${highScoreOutliers.map((c) => '- [id: ${c['id']}] ${c['text']}').join('\n')}
 --- SAMPLE COMMENTS ---
 ${sampledComments.map((t) => '- $t').join('\n')}
 ''';
-      final response = await Gemini.instance.prompt(parts: [Part.text(prompt)]);
-      final raw = response?.output ?? '';
+      final raw = await _promptGeminiWithRetry(prompt) ?? '';
       final cleaned = raw
           .replaceAll(RegExp(r'```json\s*'), '')
           .replaceAll(RegExp(r'```\s*'), '')
           .trim();
       return jsonDecode(cleaned) as Map<String, dynamic>;
-    } on GeminiException catch (e) {
-      if (mounted) showSlidingToast(context, 'Gemini error: $e');
-      return {};
     } catch (e) {
-      if (mounted)
-        showSlidingToast(context, 'Failed to parse Gemini response: $e');
+      if (mounted) showSlidingToast(context, 'Gemini error: $e');
       return {};
     }
   }
