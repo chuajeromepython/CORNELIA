@@ -446,6 +446,71 @@ class _SandboxPageState extends State<SandboxPage>
     );
   }
 
+  // ── Gemini (direct REST, with retry) ────────────────────────────────────
+
+  Future<String?> _promptGeminiWithRetry(
+    String prompt, {
+    Uint8List? imageBytes,
+    int maxAttempts = 4,
+    String model = 'gemini-3.6-flash',
+  }) async {
+    const apiKey = String.fromEnvironment(
+      'GEMINI_API_KEY',
+    ); // TODO: move to env
+    final uri = Uri.parse(
+      'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
+    );
+
+    final parts = <Map<String, dynamic>>[];
+    if (imageBytes != null) {
+      parts.add({
+        'inline_data': {
+          'mime_type': 'image/jpeg',
+          'data': base64Encode(imageBytes),
+        },
+      });
+    }
+    parts.add({'text': prompt});
+
+    for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+      final response = await http
+          .post(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'contents': [
+                {'parts': parts},
+              ],
+            }),
+          )
+          .timeout(const Duration(seconds: 120));
+
+      if (response.statusCode == 200) {
+        final decoded = jsonDecode(response.body);
+        final text =
+            decoded['candidates']?[0]?['content']?['parts']?[0]?['text']
+                as String?;
+        return text;
+      }
+
+      print(
+        'Gemini REST call failed (attempt $attempt/$maxAttempts): '
+        '${response.statusCode} — ${response.body}',
+      );
+
+      final isOverloaded = response.statusCode == 503;
+      final isLastAttempt = attempt == maxAttempts;
+      if (!isOverloaded || isLastAttempt) {
+        throw Exception(
+          'Gemini request failed: ${response.statusCode} — ${response.body}',
+        );
+      }
+
+      await Future.delayed(Duration(seconds: 2 * attempt));
+    }
+    return null;
+  }
+
   // ── Image Pick & Gemini Extraction ────────────────────────────────────────
 
   Future<void> _pickImage() async {
@@ -490,11 +555,8 @@ class _SandboxPageState extends State<SandboxPage>
         rangeEnd: _dateRangeEnd,
       );
 
-      final response = await Gemini.instance.prompt(
-        parts: [Part.uint8List(_imageBytes!), Part.text(prompt)],
-      );
-
-      final raw = response?.output ?? '';
+      final raw =
+          await _promptGeminiWithRetry(prompt, imageBytes: _imageBytes) ?? '';
       // Strip markdown fences if Gemini adds them despite instructions
       final csvText = raw
           .replaceAll(RegExp(r'```csv\s*'), '')
@@ -562,8 +624,6 @@ class _SandboxPageState extends State<SandboxPage>
         '✓ CSV is ready — tap "Run ${_selectedType!.label}" to proceed.',
         LogLevel.success,
       );
-    } on GeminiException catch (e) {
-      _log('✗ Gemini error: $e', LogLevel.error);
     } catch (e) {
       _log('✗ Extraction failed: $e', LogLevel.error);
     } finally {
@@ -973,8 +1033,7 @@ RULES:
 ${texts.take(50).map((t) => '- $t').join('\n')}
 ''';
 
-      final response = await Gemini.instance.prompt(parts: [Part.text(prompt)]);
-      final raw = response?.output ?? '';
+      final raw = await _promptGeminiWithRetry(prompt) ?? '';
       final cleaned = raw
           .replaceAll(RegExp(r'```json\s*'), '')
           .replaceAll(RegExp(r'```\s*'), '')
@@ -995,10 +1054,8 @@ ${texts.take(50).map((t) => '- $t').join('\n')}
       _log('', LogLevel.result);
       _log('━━━ OVERALL TONE ━━━', LogLevel.result);
       _log('  ${parsed['overall_tone']}', LogLevel.result);
-    } on GeminiException catch (e) {
-      _log('✗ Gemini error: $e', LogLevel.error);
     } catch (e) {
-      _log('✗ Failed to parse Gemini response: $e', LogLevel.error);
+      _log('✗ Gemini error: $e', LogLevel.error);
     }
   }
 

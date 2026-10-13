@@ -1,3 +1,4 @@
+import 'package:firebase_performance/firebase_performance.dart';
 import 'package:firebase_ai/data_analysis_tools/bar.dart';
 import 'package:firebase_ai/data_analysis_tools/choropleth.dart';
 import 'package:firebase_ai/data_analysis_tools/controversy.dart';
@@ -370,6 +371,8 @@ class _TopicState extends State<Topic> {
 
   Future<Map<String, dynamic>> _runRobertaSentiment(List<String> data) async {
     print("calling roberta-base");
+    final trace = FirebasePerformance.instance.newTrace('roberta_sentiment');
+    await trace.start();
     final response = await http
         .post(
           Uri.parse(
@@ -379,6 +382,8 @@ class _TopicState extends State<Topic> {
           body: jsonEncode({"data": data}),
         )
         .timeout(const Duration(seconds: 300));
+    trace.setMetric('status_code', response.statusCode);
+    await trace.stop();
     if (response.statusCode == 200) {
       print("DONE");
       return Map<String, dynamic>.from(jsonDecode(response.body)["results"]);
@@ -571,8 +576,9 @@ class _TopicState extends State<Topic> {
     int maxAttempts = 4,
     String model = 'gemini-3.6-flash',
   }) async {
-    const apiKey =
-        'AIzaSyADozCO4uBbQ_t7GBqx6GQDQ-CAeaY6LX8'; // TODO: move to env
+    const apiKey = String.fromEnvironment(
+      'GEMINI_API_KEY',
+    ); // TODO: move to env
     final uri = Uri.parse(
       'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
     );
